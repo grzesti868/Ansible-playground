@@ -1,10 +1,16 @@
 ---
 # ansible -m copy -a "src=../master.gitconfig dest=~/.gitconfig" localhost
-
+# first playbook
 - name: Ensure ~/.gitconfig copied from master.gitconfig
-  hosts: localhost
+  hosts: servers localhost
   tasks: 
   - copy:
       src: ../master.gitconfig
       dest: ~/.gitconfig
-
+- name: Ensure yum packages are installed
+  become: yes
+  hosts: servers
+  tasks:
+  - yum:
+      name: ansible
+      state: latest
