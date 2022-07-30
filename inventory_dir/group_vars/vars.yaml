@@ -1,4 +1,4 @@
 ---
 # Default Connectivity Variables
 ansible_user: "greg"
-ansible_password: 
+ansible_password: {{ vault_secret_password }}  
