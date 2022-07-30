@@ -1,0 +1,4 @@
+---
+# Default Connectivity Variables
+ansible_user: "greg"
+ansible_password: 
