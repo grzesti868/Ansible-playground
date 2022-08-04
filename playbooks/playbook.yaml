@@ -3,14 +3,16 @@
 # first playbook
 - name: Ensure ~/.gitconfig copied from master.gitconfig
   hosts: servers localhost
+  become: yes
   tasks: 
   - copy:
       src: ../master.gitconfig
       dest: ~/.gitconfig
-- name: Ensure yum packages are installed
+- name: Ensure packages are updated
+  hosts: servers localhost
   become: yes
-  hosts: servers
   tasks:
   - yum:
-      name: ansible
-      state: latest
+     name: '*'
+     state: latest
+     exclude: kernel*
