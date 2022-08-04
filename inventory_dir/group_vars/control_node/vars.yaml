@@ -1,0 +1,9 @@
+---
+# Default Connectivity Variables
+ansible_host: 192.168.64.3
+ansible_user: greg
+ansible_become: yes
+ansible_become_user: root
+ansible_method: sudo
+ansible_password: "{{ vault_ansible_password }}"
+ansible_become_password: "{{ vault_ansible_become_password }}"  

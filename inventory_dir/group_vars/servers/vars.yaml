@@ -1,0 +1,7 @@
+---
+# Default Connectivity Variables
+ansible_user: greg
+ansible_become: yes
+ansible_become_user: root
+ansible_password: "{{ vault_ansible_password }}"
+ansible_become_password: "{{ vault_ansible_become_password }}"  
