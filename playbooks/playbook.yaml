@@ -1,13 +1,47 @@
 ---
 # ansible -m copy -a "src=../master.gitconfig dest=~/.gitconfig" localhost
-# first playbook
+# Playbook to play
+- name: Ensure git is installed on hosts
+  hosts: all
+  become: yes
+  tasks:
+  - yum:
+     name: git
+     state: latest
+
+
 - name: Ensure ~/.gitconfig copied from master.gitconfig
   hosts: servers control_node
   become: yes
-  tasks: 
-  - copy:
+  tasks:
+
+  - name: git_config module to list config
+    git_config: 
+      list_all: yes 
+      scope: global
+
+  - name: shot config in targets
+    command: git config --global --list
+    ignore_errors: yes
+    register: git_config_before
+  - name: show git config
+    debug: 
+      var: git_config_before
+    
+  - name: copy and paste file
+    copy:
       src: ../master.gitconfig
       dest: ~/.gitconfig
+
+  - name: show newly added config
+    command: git config --global --list
+    ignore_errors: yes
+    register: git_config_after
+
+  - name: Ensure git config after with debug
+    debug: 
+      var: git_config_after.stdout_lines
+
 - name: Ensure packages are updated
   hosts: servers control_node
   become: yes
@@ -16,3 +50,4 @@
      name: '*'
      state: latest
      exclude: kernel*
+
