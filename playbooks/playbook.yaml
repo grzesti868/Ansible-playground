@@ -20,7 +20,7 @@
       list_all: yes 
       scope: global
 
-  - name: shot config in targets
+  - name: show config in targets
     command: git config --global --list
     ignore_errors: yes
     register: git_config_before
