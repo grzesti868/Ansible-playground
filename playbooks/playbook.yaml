@@ -3,16 +3,17 @@
 # Playbook to play
 - name: Ensure git is installed on hosts
   hosts: all
-  become: yes
+  become: true
   tasks:
   - yum:
      name: git
      state: latest
 
 
+
 - name: Ensure ~/.gitconfig copied from master.gitconfig
   hosts: servers control_node
-  become: yes
+  become: true
   tasks:
 
   - name: git_config module to list config
@@ -22,7 +23,7 @@
 
   - name: show config in targets
     command: git config --global --list
-    ignore_errors: yes
+    ignore_errors: true
     register: git_config_before
   - name: show git config
     debug: 
@@ -35,7 +36,7 @@
 
   - name: show newly added config
     command: git config --global --list
-    ignore_errors: yes
+    ignore_errors: true
     register: git_config_after
 
   - name: Ensure git config after with debug
@@ -44,10 +45,10 @@
 
 - name: Ensure packages are updated
   hosts: servers control_node
-  become: yes
+  become: true
   tasks:
   - yum:
      name: '*'
      state: latest
-     exclude: kernel*
+     exclude: any-package*
 
