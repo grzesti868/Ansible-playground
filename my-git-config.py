@@ -1,4 +1,5 @@
 #! /usr/bin/python
+#Set basic setting into git config file
 import os
 cmd = '''
 git config --global user.name "Greg"
