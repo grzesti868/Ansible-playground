@@ -1,17 +1,57 @@
 #!/usr/bin/env python3
-import json
+'''
+Sample custom dynamic inv setting addresses 
+'''
 
-inventory = {
-    "_meta": {
-        "hostvars": {}
-    },
-    "servers": {"hosts": []}
-}
-for i in range(5,7,1):
-    host = f"server{i}"
-    inventory["_meta"]["hostvars"][host] = {
-        "ansible_host": f"192.168.64.{i}",
-        "host_var": host
-    }
-    inventory["servers"]["hosts"].append(host)
-print(json.dumps(inventory))
+import argparse
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+
+class DynamicInv(object):
+
+    def __init__(self):
+        self.inventory = {
+            "_meta": {
+                "hostvars": {}
+            },
+            "servers": {"hosts": []}
+        } 
+        self.read_cli_args()
+
+        #--list
+        if self.args.list:
+            self.inventory = self.dynamic_inv()
+        #--host [hostname]
+        elif self.args.host:
+            # not implemented
+            self.inventory = self.empty_inv()
+        else:
+            self.inventory = self.empty_inv()
+        
+        print(json.dumps(self.inventory))
+
+    def dynamic_inv(self):
+        for i in range(5,7,1):
+            host = f"server{i}"
+            self.inventory["_meta"]["hostvars"][host] = {
+                "ansible_host": f"192.168.64.{i}",
+                "host_var": host
+            }
+            self.inventory["servers"]["hosts"].append(host)
+        return self.inventory
+
+    #Not implemented yet
+    def empty_inv(self):
+        return self.dynamic_inv()
+        
+
+    def read_cli_args(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--list', action = 'store_true')
+        parser.add_argument('--host', action = 'store')
+        self.args = parser.parse_args()
+
+DynamicInv()
