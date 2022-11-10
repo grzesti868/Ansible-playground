@@ -1,0 +1,27 @@
+---
+#https://docs.ansible.com/ansible/2.9/modules/docker_container_module.html
+
+- name: Make sure docker package is installed
+  hosts: control_node
+  become: true
+  tasks:
+  - pip:
+      name: docker
+      state: present
+
+  - name: Start a container with a command
+    docker_container:
+      name: sleepy
+      image: ubuntu
+      command: bash
+
+  - name: Ensure docker container started
+    docker_container:
+      image: python
+      #command: ["sleep", "infinity"]
+      interactive: true
+      name: "{{ item }}"
+      state: started
+    loop: "{{ query('inventory_hostnames', 'containers') }}"
+
+

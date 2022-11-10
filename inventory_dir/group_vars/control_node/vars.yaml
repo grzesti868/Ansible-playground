@@ -1,6 +1,6 @@
 ---
 # Default Connectivity Variables
-ansible_host: 192.168.64.3
+ansible_host: 192.168.0.134
 ansible_user: greg
 ansible_become: yes
 ansible_become_user: root

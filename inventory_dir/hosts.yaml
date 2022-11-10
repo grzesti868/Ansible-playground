@@ -11,3 +11,9 @@ all:
     control_node:
       hosts:
         local:
+    containers:
+      hosts:
+        ansible_container_test[1:3]:
+      
+
+

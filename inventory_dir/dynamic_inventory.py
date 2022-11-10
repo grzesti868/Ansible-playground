@@ -12,6 +12,8 @@ except ImportError:
 
 class DynamicInv(object):
 
+    list_of_hosts = [112,134,151]
+
     def __init__(self):
         self.inventory = {
             "_meta": {
@@ -34,10 +36,11 @@ class DynamicInv(object):
         print(json.dumps(self.inventory))
 
     def dynamic_inv(self):
-        for i in range(5,7,1):
+        
+        for i in self.list_of_hosts:
             host = f"server{i}"
             self.inventory["_meta"]["hostvars"][host] = {
-                "ansible_host": f"192.168.64.{i}",
+                "ansible_host": f"192.168.0.{i}",
                 "host_var": host
             }
             self.inventory["servers"]["hosts"].append(host)
