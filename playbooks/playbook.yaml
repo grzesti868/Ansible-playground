@@ -2,53 +2,58 @@
 # ansible -m copy -a "src=../master.gitconfig dest=~/.gitconfig" localhost
 # Playbook to play
 - name: Ensure git is installed on hosts
-  hosts: all
+  hosts: control_node servers
   become: true
   tasks:
-  - yum:
+  - name: Install latest git package
+    ansible.builtin.yum:
      name: git
      state: latest
-
-
+     update_only: false
 
 - name: Ensure ~/.gitconfig copied from master.gitconfig
   hosts: servers control_node
   become: true
   tasks:
 
-  - name: git_config module to list config
-    git_config: 
-      list_all: yes 
+   - name: Git_config module to list config
+     community.general.git_config:
+      list_all: true
       scope: global
 
-  - name: show config in targets
-    command: git config --global --list
-    ignore_errors: true
-    register: git_config_before
-  - name: show git config
-    debug: 
+   - name: Show config in targets
+     ansible.builtin.command:
+      cmd: git config --global --list
+     ignore_errors: true
+     register: git_config_before
+
+   - name: Show git config
+     ansible.builtin.debug:
       var: git_config_before
-    
-  - name: copy and paste file
-    copy:
+
+   - name: Copy and paste file
+     ansible.builtin.copy:
       src: ../master.gitconfig
       dest: ~/.gitconfig
+      mode: '644'
 
-  - name: show newly added config
-    command: git config --global --list
-    ignore_errors: true
-    register: git_config_after
+   - name: Show newly added config
+     ansible.builtin.command:
+      cmd: git config --global --list
+     ignore_errors: true
+     register: git_config_after
 
-  - name: Ensure git config after with debug
-    debug: 
+   - name: Ensure git config after with debug
+     ansible.builtin.debug:
       var: git_config_after.stdout_lines
 
 - name: Ensure packages are updated
   hosts: servers control_node
   become: true
   tasks:
-  - yum:
-     name: '*'
-     state: latest
-     exclude: any-package*
-
+   - name: Check for all packages
+     ansible.builtin.yum:
+      name: '*'
+      state: latest
+      exclude: any-package*
+      update_only: true

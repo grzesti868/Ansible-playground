@@ -1,0 +1,6 @@
+---
+# https://galaxy.ansible.com/carlba/gitconfig
+- name: Test gitconfig using role from galaxy
+  hosts: control_node
+  roles:
+    - carlba.gitconfig
