@@ -56,4 +56,5 @@
       name: '*'
       state: latest
       exclude: any-package*
+      bugfix: true
       update_only: true

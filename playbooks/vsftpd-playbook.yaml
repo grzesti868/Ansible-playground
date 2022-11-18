@@ -1,0 +1,41 @@
+---
+# https://github.com/bertvv/ansible-role-vsftpd/tree/vagrant-tests
+- name: Test installing and configuring vsftpd service
+  hosts: control_node
+  become: true
+  vars:
+    vsftpd_anon_root: /srv/shares/public
+    vsftpd_local_enable: true
+    ansible_os_family: 'CentOS'
+    vsftpd_local_root: /srv/shares/private
+    vsftpd_options:
+      - key: delete_failed_uploads
+        value: 'YES'
+      - key: ftpd_banner
+        value: 'Welcome to the FTP service'
+  roles:
+    - { role: ../vsftpdRole }
+  pre_tasks:
+    - name: Check for ansible.builtin.debug var
+      ansible.builtin.debug:
+        var: ansible_python_interpreter
+    - name: Check for ansible.builtin.debug var1
+      ansible.builtin.debug:
+        var: ansible_os_family
+  post_tasks:
+    - name: Put a demo file in the anonymous directory
+      ansible.builtin.copy:
+        dest: '{{ vsftpd_anon_root }}/README'
+        content: 'anon_root'
+        mode: '0644'
+    - name: Put a demo file in the user directory
+      ansible.builtin.copy:
+        dest: '{{ vsftpd_local_root }}/README'
+        content: 'local_root'
+        mode: '0644'
+    - name: Add user for testing authenticated access
+      ansible.builtin.user:
+        name: alice
+        state: present
+        password: '$6$vNPq5eom$xCeXlUBGlXqZB5Mj1J1Ts3xb/e8TBYix6o73HlkCCrGF8r4rPSMM2yavNqEg2RPUYgoqTuWEb3I07HJR48OxB1'
+        # alice

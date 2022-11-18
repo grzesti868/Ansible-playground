@@ -1,5 +1,6 @@
 ---
 # https://docs.ansible.com/ansible/2.9/modules/docker_container_module.html
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_image_module.html
 
 - name: Make sure docker package is installed
   hosts: control_node
@@ -10,13 +11,31 @@
      name: docker
      state: present
 
+  - name: Pull my own image
+    community.docker.docker_image:
+     name: gregvader98/backend-server:test1
+     source: pull
+    register: backend_result
+
+  - name: Print the results for debug
+    ansible.builtin.debug:
+     msg:
+      - " {{ backend_result }} "
+
   - name: Start a container with a command
     community.docker.docker_container:
-     name: sleepy
-     image: ubuntu
+     name: Commerce
+     image: gregvader98/backend-server:test1
      command: bash
+    when: backend_result.failed == 0
 
-  - name: Ensure docker container started
+  - name: Pull python image
+    community.docker.docker_image:
+     name: python:latest
+     source: pull
+    register: python_result
+
+  - name: Ensure python docker container started
     community.docker.docker_container:
      image: python
      # command: ["sleep", "infinity"]

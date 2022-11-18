@@ -1,0 +1,22 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_container_module.html
+# https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_image_module.html
+
+- name: Make sure podman package is installed
+  hosts: control_node
+  become: true
+  tasks:
+  - name: Install podman package
+    ansible.builtin.pip:
+     name: podman
+     state: present
+
+  - name: Pull my image
+    containers.podman.podman_image:
+     name: docker.io/gregvader98/backend-server:test1
+
+  - name: Run my own image
+    containers.podman.podman_container:
+     name: container
+     image: docker.io/gregvader98/backend-server:test1
+     state: started
