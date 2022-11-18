@@ -1,5 +1,6 @@
 ---
 # https://github.com/bertvv/ansible-role-vsftpd/tree/vagrant-tests
+# to test if vsftpd works run ftp localhost
 - name: Test installing and configuring vsftpd service
   hosts: control_node
   become: true
@@ -35,7 +36,7 @@
         mode: '0644'
     - name: Add user for testing authenticated access
       ansible.builtin.user:
-        name: alice
+        name: greg
         state: present
-        password: '$6$vNPq5eom$xCeXlUBGlXqZB5Mj1J1Ts3xb/e8TBYix6o73HlkCCrGF8r4rPSMM2yavNqEg2RPUYgoqTuWEb3I07HJR48OxB1'
-        # alice
+        # python -c 'import crypt; print(crypt.crypt("This is my Password", "$1$SomeSalt$"))'
+        password: $1$SomeSalt$UqddPX3r4kH3UL5jq5/ZI.
