@@ -1,7 +1,7 @@
 ---
 # handlers file for vsftpdRole
 
-- name: restart vsftpd
+- name: Restart vsftpd
   service:
     name: "{{ vsftpd_service }}"
     state: restarted

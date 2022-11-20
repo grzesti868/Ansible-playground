@@ -46,15 +46,16 @@ class DynamicInv(object):
             self.inventory["servers"]["hosts"].append(host)
         return self.inventory
 
-    #Not implemented yet
+    #Empty inventory for testing
     def empty_inv(self):
-        return self.dynamic_inv()
+        return {'_meta': {'hostvars': {}}}
+        #return self.dynamic_inv()
         
-
+    # Read the commnand line args passed to the script.
     def read_cli_args(self):
         parser = argparse.ArgumentParser()
         parser.add_argument('--list', action = 'store_true')
         parser.add_argument('--host', action = 'store')
         self.args = parser.parse_args()
-
+# Get the inventory
 DynamicInv()

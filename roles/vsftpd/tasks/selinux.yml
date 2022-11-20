@@ -2,39 +2,39 @@
 ---
 
 - name: Allow full read/write access through SELinux for el7+
-  seboolean:
+  ansible.posix.seboolean:
     name: ftpd_full_access
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   tags: vsftpd
   when:
-   - ansible_os_family == 'RedHat'
-   - ansible_distribution_major_version >= "7"
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version >= "7"
 
 - name: Allow full read/write access through SELinux for el6
-  seboolean:
+  ansible.posix.seboolean:
     name: allow_ftpd_full_access
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   tags: vsftpd
   when:
-   - ansible_os_family == 'RedHat'
-   - ansible_distribution_major_version == "6"
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == "6"
 
   # in RHEL/CentOS 7.3, the SELinux boolean ftp_home_dir was removed and
   # access to home directories is enabled by default
   # See https://bugzilla.redhat.com/show_bug.cgi?id=1352257
 - name: Check if ftp_home_dir exists
-  shell: getsebool -a | grep '^ftp_home_dir\b'
+  ansible.builtin.shell: set -o pipefail && getsebool -a | grep '^ftp_home_dir\b'
   register: var_exists
   failed_when: false
   changed_when: false
   tags: vsftpd
 
 - name: Allow access to home directories
-  seboolean:
+  ansible.posix.seboolean:
     name: ftp_home_dir
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   when: var_exists.rc == 0
   tags: vsftpd

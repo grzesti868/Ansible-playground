@@ -1,28 +1,29 @@
 ---
 # tasks file for vsftpdRole
 - name: Ensure `listen` and `listen_ipv6` are mutually exclusive
-  assert:
+  ansible.builtin.assert:
     that: "vsftpd_listen != vsftpd_listen_ipv6"
   tags: vsftpd
 
 - name: Include OS-specific variables
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_os_family }}.yml"
     - default.yml
   tags: vsftpd
 
 - name: Install Vsftpd
-  package:
+  ansible.builtin.package:
     name: '{{ vsftpd_packages }}'
     state: present
   tags: vsftpd
 
-- include_tasks: selinux.yml
-  when: ansible_selinux is defined and ansible_selinux != false and ansible_selinux.status == 'enabled'
+- name: Inlcude selinux.yml tasks
+  ansible.builtin.include_tasks: selinux.yml
+  when: ansible_selinux is defined and not ansible_selinux and ansible_selinux.status == 'enabled'
 
 - name: Ensure `anon_root` exists
-  file:
+  ansible.builtin.file:
     path: '{{ vsftpd_anon_root }}'
     state: directory
     owner: '{{ vsftpd_owner }}'
@@ -33,7 +34,7 @@
   tags: vsftpd
 
 - name: Ensure `local_root` exists
-  file:
+  ansible.builtin.file:
     path: '{{ vsftpd_local_root }}'
     state: directory
     owner: '{{ vsftpd_owner }}'
@@ -44,17 +45,17 @@
   tags: vsftpd
 
 - name: Install configuration file
-  template:
-    src:   etc_vsftpd_vsftpd.conf.j2
+  ansible.builtin.template:
+    src: etc_vsftpd_vsftpd.conf.j2
     dest: "{{ vsftpd_config_file }}"
     mode: '0600'
-    #validate: 'vsftpd -olisten=NO %s'
-    #  validation always exits with status 1, even if everything seems ok
+   # validate: 'vsftpd -olisten=NO %s'
+   # validation always exits with status 1, even if everything seems ok
   notify: restart vsftpd
   tags: vsftpd
 
 - name: Add extra (ACL) permissions
-  acl:
+  ansible.posix.acl:
     name: "{{ item.folder }}"
     entity: "{{ item.entity }}"
     etype: "{{ item.etype }}"
@@ -65,7 +66,7 @@
   tags: vsftpd
 
 - name: Ensure service is started
-  service:
+  ansible.builtin.service:
     name: '{{ vsftpd_service }}'
     state: started
     enabled: true

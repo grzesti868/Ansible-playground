@@ -7,7 +7,6 @@
   vars:
     vsftpd_anon_root: /srv/shares/public
     vsftpd_local_enable: true
-    ansible_os_family: 'CentOS'
     vsftpd_local_root: /srv/shares/private
     vsftpd_options:
       - key: delete_failed_uploads
@@ -15,12 +14,12 @@
       - key: ftpd_banner
         value: 'Welcome to the FTP service'
   roles:
-    - { role: ../vsftpdRole }
+    - { role: ../roles/vsftpd }
   pre_tasks:
     - name: Check for ansible.builtin.debug var
       ansible.builtin.debug:
         var: ansible_python_interpreter
-    - name: Check for ansible.builtin.debug var1
+    - name: Check for ansible_os_family
       ansible.builtin.debug:
         var: ansible_os_family
   post_tasks:
@@ -38,5 +37,5 @@
       ansible.builtin.user:
         name: greg
         state: present
-        # python -c 'import crypt; print(crypt.crypt("This is my Password", "$1$SomeSalt$"))'
-        password: $1$SomeSalt$UqddPX3r4kH3UL5jq5/ZI.
+        # python -c 'import crypt; print(crypt.crypt("nimda", "$1$SomeSalt$"))'
+        password: $1$SomeSalt$8v5hnG33jKbUbUa33XRMs.
