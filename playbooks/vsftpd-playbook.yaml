@@ -39,3 +39,6 @@
         state: present
         # python -c 'import crypt; print(crypt.crypt("nimda", "$1$SomeSalt$"))'
         password: $1$SomeSalt$8v5hnG33jKbUbUa33XRMs.
+        generate_ssh_key: true
+        ssh_key_type: 'ecdsa'
+        ssh_key_file: '.ssh/id_ecdsa'
