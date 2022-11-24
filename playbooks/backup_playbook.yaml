@@ -1,0 +1,15 @@
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/cron_module.html
+
+- name: "Perform backup"
+  hosts: control_node
+  become: true
+  tasks:
+  - name: "Schedule weekly backup"
+    ansible.builtin.cron:
+     name: "backup /etc"
+     weekday: "5"
+     minute: "0"
+     hour: "2"
+     user: root
+     job: "tar -czf /tmp/etc-{{ ansible_hostname }}.tgz /etc"
+     cron_file: etc_backup
